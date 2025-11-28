@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="pt-BR">
+ <head>
+  <meta charset="UTF-8">
+  <title>JK TOUR • Restaurante e Passeios no Lago Sul</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: #000000;
+      color: #ffffff;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    :focus-visible {
+      outline: 2px solid #ffffff;
+      outline-offset: 3px;
+    }
+
+    .header-fixed {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      backdrop-filter: blur(16px);
+      background-color: rgba(0, 0, 0, 0.9);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .main-content {
+      padding-top: 140px;
+    }
+
+    @media (min-width: 768px) {
+      .main-content {
+        padding-top: 100px;
+      }
+    }
+
+    .elegant-card {
+      background: linear-gradient(145deg, rgba(26, 26, 26, 0.6), rgba(0, 0, 0, 0.8));
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.4s ease;
+    }
+
+    .elegant-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 60px rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #ffffff, #e5e5e5);
+      color: #000000;
+      font-weight: 600;
+      padding: 14px 28px;
+      border-radius: 50px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(255, 255, 255, 0.25);
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    @media (min-width: 768px) {
+      .btn-primary {
+        padding: 16px 36px;
+        font-size: 16px;
+      }
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(255, 255, 255, 0.35);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: #ffffff;
+      font-weight: 600;
+      padding: 14px 28px;
+      border-radius: 50px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    @media (min-width: 768px) {
+      .btn-secondary {
+        padding: 16px 36px;
+        font-size: 16px;
+      }
+    }
+
+    .btn-secondary:hover {
+      border-color: #ffffff;
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .price-card {
+      background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(0, 0, 0, 0.95));
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 24px;
+      padding: 28px;
+      transition: all 0.4s ease;
+    }
+
+    .price-card:hover {
+      border-color: rgba(255, 255, 255, 0.4);
+      transform: translateY(-8px);
+      box-shadow: 0 16px 48px rgba(255, 255, 255, 0.15);
+    }
+
+    .section-spacing {
+      padding: 40px 0;
+    }
+
+    @media (min-width: 768px) {
+      .section-spacing {
+        padding: 80px 0;
+      }
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .nav-link {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .nav-link.active {
+      background: #ffffff;
+      color: #000000;
+    }
+
+    .image-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .image-modal.active {
+      display: flex;
+    }
+
+    .image-modal img {
+      max-width: 90%;
+      max-height: 90%;
+      object-fit: contain;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(255, 255, 255, 0.3);
+    }
+
+    .clickable-image {
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .clickable-image:hover {
+      transform: scale(1.05);
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full bg-black text-white"><!-- Modal para visualizar imagens e vídeos -->
+  <div id="imageModal" class="image-modal" onclick="closeImageModal()"><img id="modalImage" src="" alt="Imagem ampliada" style="display: none;">
+   <video id="modalVideo" controls loop style="display: none; max-width: 90%; max-height: 90%; border-radius: 12px; box-shadow: 0 20px 60px rgba(255, 255, 255, 0.3);"></video>
+  </div>
+  <header class="header-fixed w-full">
+   <div class="max-w-7xl mx-auto px-4 py-3 md:px-6 md:py-5 flex flex-col md:flex-row items-center justify-between gap-3"><button onclick="navigateToPage('home')" class="flex items-center gap-2 md:gap-3 rounded-full px-3 py-2 md:px-6 md:py-3 cursor-pointer" aria-label="Logo JK TOUR"> <img src="https://i.imgur.com/QTUmq3K.png" alt="JK TOUR Logo" class="w-16 h-16 md:w-24 md:h-24 rounded-full object-cover" onerror="this.style.display='none';">
+     <div>
+      <p class="text-base md:text-lg font-bold tracking-wider uppercase text-white">JK TOUR</p>
+      <p class="text-xs text-gray-400 tracking-wide uppercase">Lago Sul • Brasília</p>
+     </div></button>
+    <nav aria-label="Navegação principal">
+     <ul class="flex flex-wrap justify-center gap-2 text-xs md:text-sm">
+      <li><button onclick="navigateToPage('home')" class="nav-link px-3 py-2 md:px-4 md:py-2 rounded-full text-white hover:bg-white hover:text-black transition-all duration-300 active">Home</button></li>
+      <li><button onclick="navigateToPage('cardapio')" class="nav-link px-3 py-2 md:px-4 md:py-2 rounded-full text-white hover:bg-white hover:text-black transition-all duration-300">Cardápio</button></li>
+      <li><button onclick="navigateToPage('passeios')" class="nav-link px-3 py-2 md:px-4 md:py-2 rounded-full text-white hover:bg-white hover:text-black transition-all duration-300">Passeios</button></li>
+      <li><button onclick="navigateToPage('contato')" class="nav-link px-3 py-2 md:px-4 md:py-2 rounded-full bg-white text-black font-semibold hover:shadow-lg transition-all duration-300">Contato</button></li>
+     </ul>
+    </nav>
+   </div>
+  </header>
+  <main class="main-content"><!-- PÁGINA HOME -->
+   <div id="page-home" class="page active">
+    <section class="section-spacing">
+     <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center mb-12 md:mb-16 px-4">
+       <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6">JK TOUR</h1>
+       <p class="text-lg md:text-xl text-gray-300 mb-6 md:mb-8 max-w-2xl mx-auto">Restaurante e Passeios no Lago Sul - Brasília</p>
+       <p class="text-base md:text-lg text-gray-400 max-w-3xl mx-auto">Um ponto único à beira do Lago Paranoá, unindo gastronomia regional, ambiente acolhedor e experiências inesquecíveis.</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6 md:gap-8 mb-12 md:mb-16">
+       <div class="elegant-card rounded-3xl p-6 md:p-8 text-center overflow-hidden">
+        <div class="mb-4 -mx-6 -mt-6 md:-mx-8 md:-mt-8 overflow-hidden"><img src="https://i.imgur.com/gTfd8rg.jpg" alt="Gastronomia regional" class="clickable-image" style="width: 100%; height: 180px; object-fit: cover; object-position: center;" onclick="openImageModal(event, 'https://i.imgur.com/gTfd8rg.jpg')" onerror="this.style.display='none';">
+        </div>
+        <h3 class="text-xl md:text-2xl font-bold mb-2 md:mb-3">Gastronomia</h3>
+        <p class="text-sm md:text-base text-gray-400">Culinária regional com ingredientes frescos</p>
+       </div>
+       <div class="elegant-card rounded-3xl p-6 md:p-8 text-center overflow-hidden">
+        <div class="mb-4 -mx-6 -mt-6 md:-mx-8 md:-mt-8 overflow-hidden"><img src="https://i.imgur.com/P2ZHruS.jpg" alt="Passeios no Lago Paranoá" class="clickable-image" style="width: 100%; height: 180px; object-fit: cover; object-position: center;" onclick="openImageModal(event, 'https://i.imgur.com/P2ZHruS.jpg')" onerror="this.style.display='none';">
+        </div>
+        <h3 class="text-xl md:text-2xl font-bold mb-2 md:mb-3">Passeios</h3>
+        <p class="text-sm md:text-base text-gray-400">Lancha, caiaque e stand up no lago</p>
+       </div>
+       <div class="elegant-card rounded-3xl p-6 md:p-8 text-center overflow-hidden">
+        <div class="mb-4 -mx-6 -mt-6 md:-mx-8 md:-mt-8 overflow-hidden"><img src="https://i.imgur.com/kNA3VSw.jpg" alt="Vista do Lago Paranoá" class="clickable-image" style="width: 100%; height: 180px; object-fit: cover; object-position: center;" onclick="openImageModal(event, 'https://i.imgur.com/kNA3VSw.jpg')" onerror="this.style.display='none';">
+        </div>
+        <h3 class="text-xl md:text-2xl font-bold mb-2 md:mb-3">Vista única</h3>
+        <p class="text-sm md:text-base text-gray-400">Pôr do sol inesquecível no Lago Paranoá</p>
+       </div>
+      </div>
+      <div class="text-center px-4"><button onclick="navigateToPage('cardapio')" class="btn-primary mb-3 md:mb-0 md:mr-4 w-full md:w-auto">Ver Cardápio</button> <button onclick="navigateToPage('passeios')" class="btn-secondary w-full md:w-auto">Ver Passeios</button>
+      </div>
+     </div>
+    </section>
+   </div><!-- PÁGINA CARDÁPIO -->
+   <div id="page-cardapio" class="page">
+    <section class="section-spacing">
+     <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center mb-16">
+       <h2 class="text-4xl md:text-5xl font-bold mb-4">Cardápio Completo</h2>
+       <p class="text-gray-400">Culinária regional com ingredientes frescos</p>
+      </div>
+      <div class="mb-16">
+       <h3 class="text-3xl font-bold mb-8 text-center">🍽️ Almoço</h3>
+       <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div class="price-card text-center overflow-hidden">
+         <div class="mb-4 -mx-7 -mt-7 overflow-hidden"><img src="https://i.imgur.com/YazqQ4T.jpg" alt="Prato Feito" class="clickable-image" style="width: 100%; height: 180px; object-fit: cover; object-position: center;" onclick="openImageModal(event, 'https://i.imgur.com/YazqQ4T.jpg')" onerror="this.style.display='none';">
+         </div>
+         <h4 class="text-2xl font-bold mb-3">Prato Feito</h4>
+         <p class="text-gray-400 mb-4">Segunda a sexta-feira</p>
+         <p class="text-sm text-gray-300 mb-6">Refeição completa e caseira</p>
+         <p class="text-3xl font-bold">R$ 30,00</p>
+        </div>
+        <div class="price-card text-center overflow-hidden">
+         <div class="mb-4 -mx-7 -mt-7 overflow-hidden">
+          <video src="https://i.imgur.com/KixWNZV.mp4" class="clickable-image" style="width: 100%; height: 180px; object-fit: cover; object-position: center;" autoplay loop muted playsinline onclick="openImageModal(event, 'https://i.imgur.com/KixWNZV.mp4')" onerror="this.style.display='none';"></video>
+         </div>
+         <h4 class="text-2xl font-bold mb-3">Self-Service</h4>
+         <p class="text-gray-400 mb-4">Finais de semana e feriados</p>
+         <p class="text-sm text-gray-300 mb-6">Variedade de pratos</p>
+         <p class="text-3xl font-bold">R$ 69,99/kg</p>
+        </div>
+       </div>
+      </div>
+      <div class="mb-16">
+       <h3 class="text-3xl font-bold mb-8 text-center">Pratos À La Carte</h3>
+       <div class="grid md:grid-cols-3 gap-6">
+        <div class="price-card overflow-hidden">
+         <div class="mb-4 -mx-7 -mt-7 overflow-hidden"><img src="https://i.imgur.com/3Cc5mLb.jpg" alt="Tilápia Inteira" class="clickable-image" style="width: 100%; height: 180px; object-fit: cover; object-position: center;" onclick="openImageModal(event, 'https://i.imgur.com/3Cc5mLb.jpg')" onerror="this.style.display='none';">
+         </div>
+         <h4 class="text-xl font-bold mb-2">Tilápia Inteira</h4>
+         <p class="text-sm text-gray-400 mb-4">Peixe fresco grelhado ou frito. Acompanha baião de dois, vinagrete e farofa.</p>
+         <p class="text-3xl font-bold">R$ 150,00</p>
+         <p class="text-xs text-gray-500 mt-2">Serve 4 pessoas</p>
+        </div>
+        <div class="price-card overflow-hidden">
+         <div class="mb-4 -mx-7 -mt-7 overflow-hidden"><img src="https://i.imgur.com/5jkcA6s.jpg" alt="Fil�� de Tilápia com Fritas" class="clickable-image" style="width: 100%; height: 180px; object-fit: cover; object-position: center;" onclick="openImageModal(event, 'https://i.imgur.com/5jkcA6s.jpg')" onerror="this.style.display='none';">
+         </div>
+         <h4 class="text-xl font-bold mb-2">Filé de Tilápia com Fritas</h4>
+         <p class="text-sm text-gray-400 mb-4">Filé grelhado ou frito. Acompanha arroz, batata frita e vinagrete.</p>
+         <p class="text-3xl font-bold">R$ 99,90</p>
+         <p class="text-xs text-gray-500 mt-2">Serve 3 pessoas</p>
+        </div>
+        <div class="price-card overflow-hidden">
+         <div class="mb-4 -mx-7 -mt-7 overflow-hidden"><img src="https://i.imgur.com/Ph84Uhl.jpg" alt="Parmegiana de Peixe" class="clickable-image" style="width: 100%; height: 180px; object-fit: cover; object-position: center;" onclick="openImageModal(event, 'https://i.imgur.com/Ph84Uhl.jpg')" onerror="this.style.display='none';">
+         </div>
+         <h4 class="text-xl font-bold mb-2">Parmegiana de Peixe</h4>
+         <p class="text-sm text-gray-400 mb-4">Filé empanado, molho de tomate e queijo. Acompanha arroz e batata frita.</p>
+         <p class="text-3xl font-bold">R$ 120,00</p>
+         <p class="text-xs text-gray-500 mt-2">Serve 3 pessoas</p>
+        </div>
+       </div>
+      </div>
+      <div class="mb-16">
+       <h3 class="text-3xl font-bold mb-8 text-center">Petiscos</h3>
+       <div class="grid md:grid-cols-4 gap-6">
+        <div class="price-card overflow-hidden">
+         <div class="mb-4 -mx-7 -mt-7 overflow-hidden"><img src="https://i.imgur.com/E3xhG2s.jpg" alt="Batata Tradicional" class="clickable-image" style="width: 100%; height: 140px; object-fit: cover; object-position: center;" onclick="openImageModal(event, 'https://i.imgur.com/E3xhG2s.jpg')" onerror="this.style.display='none';">
+         </div>
+         <h4 class="font-bold mb-2">Batata Tradicional</h4>
+         <p class="text-2xl font-bold">R$ 30,00</p>
+        </div>
+        <div class="price-card overflow-hidden">
+         <div class="mb-4 -mx-7 -mt-7 overflow-hidden"><img src="https://i.imgur.com/2eePXSG.jpg" alt="Batata com Bacon e Cheddar" class="clickable-image" style="width: 100%; height: 140px; object-fit: cover; object-position: center;" onclick="openImageModal(event, 'https://i.imgur.com/2eePXSG.jpg')" onerror="this.style.display='none';">
+         </div>
+         <h4 class="font-bold mb-2">Batata com Bacon</h4>
+         <p class="text-sm text-gray-400 mb-3">Com cheddar cremoso</p>
+         <p class="text-2xl font-bold">R$ 35,00</p>
+        </div>
+        <div class="price-card overflow-hidden">
+         <div class="mb-4 -mx-7 -mt-7 overflow-hidden"><img src="https://i.imgur.com/usw7xEY.jpg" alt="Calabresa Acebolada" class="clickable-image" style="width: 100%; height: 140px; object-fit: cover; object-position: center;" onclick="openImageModal(event, 'https://i.imgur.com/usw7xEY.jpg')" onerror="this.style.display='none';">
+         </div>
+         <h4 class="font-bold mb-2">Calabresa Acebolada</h4>
+         <p class="text-2xl font-bold">R$ 35,00</p>
+        </div>
+        <div class="price-card overflow-hidden">
+         <div class="mb-4 -mx-7 -mt-7 overflow-hidden"><img src="https://i.imgur.com/9Qg3EJH.jpg" alt="Tilápia Frita" class="clickable-image" style="width: 100%; height: 140px; object-fit: cover; object-position: center;" onclick="openImageModal(event, 'https://i.imgur.com/9Qg3EJH.jpg')" onerror="this.style.display='none';">
+         </div>
+         <h4 class="font-bold mb-2">Tilápia</h4>
+         <p class="text-2xl font-bold">R$ 50,00</p>
+        </div>
+        <div class="price-card overflow-hidden">
+         <div class="mb-4 -mx-7 -mt-7 overflow-hidden"><img src="https://i.imgur.com/YrTbvJq.jpg" alt="Camarão" class="clickable-image" style="width: 100%; height: 140px; object-fit: cover; object-position: center;" onclick="openImageModal(event, 'https://i.imgur.com/YrTbvJq.jpg')" onerror="this.style.display='none';">
+         </div>
+         <h4 class="font-bold mb-2">Camarão</h4>
+         <p class="text-2xl font-bold">R$ 60,00</p>
+        </div>
+        <div class="price-card overflow-hidden">
+         <div class="mb-4 -mx-7 -mt-7 overflow-hidden"><img src="https://i.imgur.com/eNa3pMS.jpg" alt="Carne de Sol" class="clickable-image" style="width: 100%; height: 140px; object-fit: cover; object-position: center;" onclick="openImageModal(event, 'https://i.imgur.com/eNa3pMS.jpg')" onerror="this.style.display='none';">
+         </div>
+         <h4 class="font-bold mb-2">Carne de Sol</h4>
+         <p class="text-2xl font-bold">R$ 55,00</p>
+        </div>
+        <div class="price-card overflow-hidden">
+         <div class="mb-4 -mx-7 -mt-7 overflow-hidden"><img src="https://i.imgur.com/qCefNKY.jpg" alt="Frango à Passarinho" class="clickable-image" style="width: 100%; height: 140px; object-fit: cover; object-position: center;" onclick="openImageModal(event, 'https://i.imgur.com/qCefNKY.jpg')" onerror="this.style.display='none';">
+         </div>
+         <h4 class="font-bold mb-2">Frango à Passarinho</h4>
+         <p class="text-2xl font-bold">R$ 35,00</p>
+        </div>
+       </div>
+      </div>
+      <div class="mb-16">
+       <h3 class="text-3xl font-bold mb-8 text-center">🍹 Drinks com Álcool</h3>
+       <div class="grid md:grid-cols-3 gap-6">
+        <div class="price-card overflow-hidden">
+         <div class="mb-4 -mx-7 -mt-7 overflow-hidden"><img src="https://i.imgur.com/aO1ksx1.jpg" alt="Caipirinha" class="clickable-image" style="width: 100%; height: 140px; object-fit: cover; object-position: center;" onclick="openImageModal(event, 'https://i.imgur.com/aO1ksx1.jpg')" onerror="this.style.display='none';">
+         </div>
+         <h4 class="font-bold mb-2">Caipirinha / Caipiroska</h4>
+         <p class="text-sm text-gray-400 mb-3">Cachaça ou vodka, limão e açúcar</p>
+         <p class="text-2xl font-bold">R$ 16,00</p>
+        </div>
+        <div class="price-card overflow-hidden">
+         <div class="mb-4 -mx-7 -mt-7 overflow-hidden"><img src="https://i.imgur.com/i38ynb4.jpg" alt="Mojito" class="clickable-image" style="width: 100%; height: 140px; object-fit: cover; object-position: center;" onclick="openImageModal(event, 'https://i.imgur.com/i38ynb4.jpg')" onerror="this.style.display='none';">
+         </div>
+         <h4 class="font-bold mb-2">Mojito</h4>
+         <p class="text-sm text-gray-400 mb-3">Rum, hortelã, limão e açúcar</p>
+         <p class="text-2xl font-bold">R$ 25,00</p>
+        </div>
+        <div class="price-card overflow-hidden">
+         <div class="mb-4 -mx-7 -mt-7 overflow-hidden"><img src="https://i.imgur.com/JROnpxc.jpg" alt="Mint Julep" class="clickable-image" style="width: 100%; height: 140px; object-fit: cover; object-position: center;" onclick="openImageModal(event, 'https://i.imgur.com/JROnpxc.jpg')" onerror="this.style.display='none';">
+         </div>
+         <h4 class="font-bold mb-2">Mint Julep</h4>
+         <p class="text-sm text-gray-400 mb-3">Whisky, hortelã e açúcar</p>
+         <p class="text-2xl font-bold">R$ 27,00</p>
+        </div>
+        <div class="price-card overflow-hidden">
+         <div class="mb-4 -mx-7 -mt-7 overflow-hidden"><img src="https://i.imgur.com/MLEj7L9.jpg" alt="Whiskey Sour" class="clickable-image" style="width: 100%; height: 140px; object-fit: cover; object-position: center;" onclick="openImageModal(event, 'https://i.imgur.com/MLEj7L9.jpg')" onerror="this.style.display='none';">
+         </div>
+         <h4 class="font-bold mb-2">Whiskey Sour</h4>
+         <p class="text-sm text-gray-400 mb-3">Whisky, limão, açúcar, clara de ovo e angostura</p>
+         <p class="text-2xl font-bold opacity-50">Indisponível</p>
+        </div>
+        <div class="price-card overflow-hidden">
+         <div class="mb-4 -mx-7 -mt-7 overflow-hidden"><img src="https://i.imgur.com/o7FjHCU.jpg" alt="Gin Tônica" class="clickable-image" style="width: 100%; height: 140px; object-fit: cover; object-position: center;" onclick="openImageModal(event, 'https://i.imgur.com/o7FjHCU.jpg')" onerror="this.style.display='none';">
+         </div>
+         <h4 class="font-bold mb-2">Gin Tônica</h4>
+         <p class="text-sm text-gray-400 mb-3">Gin, limão e água tônica</p>
+         <p class="text-2xl font-bold">R$ 28,00</p>
+        </div>
+        <div class="price-card overflow-hidden">
+         <div class="mb-4 -mx-7 -mt-7 overflow-hidden"><img src="https://i.imgur.com/zoHqI7y.jpg" alt="Gin Tropical" class="clickable-image" style="width: 100%; height: 140px; object-fit: cover; object-position: center;" onclick="openImageModal(event, 'https://i.imgur.com/zoHqI7y.jpg')" onerror="this.style.display='none';">
+         </div>
+         <h4 class="font-bold mb-2">Gin Tropical</h4>
+         <p class="text-sm text-gray-400 mb-3">Gin, laranja e Red Bull tropical</p>
+         <p class="text-2xl font-bold">R$ 32,00</p>
+        </div>
+       </div>
+      </div>
+      <div class="mb-16">
+       <h3 class="text-3xl font-bold mb-8 text-center">Sem Álcool</h3>
+       <div class="grid md:grid-cols-3 gap-6">
+        <div class="price-card overflow-hidden">
+         <div class="mb-4 -mx-7 -mt-7 overflow-hidden"><img src="https://i.imgur.com/tNB3yBS.jpg" alt="Soda Italiana" class="clickable-image" style="width: 100%; height: 140px; object-fit: cover; object-position: center;" onclick="openImageModal(event, 'https://i.imgur.com/tNB3yBS.jpg')" onerror="this.style.display='none';">
+         </div>
+         <h4 class="font-bold mb-2">Soda Italiana</h4>
+         <p class="text-sm text-gray-400 mb-3">Xarope (maçã verde, maracujá ou grenadine), limão e água com gás</p>
+         <p class="text-2xl font-bold">R$ 20,00</p>
+        </div>
+        <div class="price-card overflow-hidden">
+         <div class="mb-4 -mx-7 -mt-7 overflow-hidden"><img src="https://i.imgur.com/fuO2Mt9.jpg" alt="Margarita sem álcool" class="clickable-image" style="width: 100%; height: 140px; object-fit: cover; object-position: center;" onclick="openImageModal(event, 'https://i.imgur.com/fuO2Mt9.jpg')" onerror="this.style.display='none';">
+         </div>
+         <h4 class="font-bold mb-2">Margarita (Sem álcool)</h4>
+         <p class="text-sm text-gray-400 mb-3">Suco de limão, suco de laranja, açúcar e água com gás</p>
+         <p class="text-2xl font-bold">R$ 22,00</p>
+        </div>
+       </div>
+      </div>
+      <div class="mb-16">
+       <h3 class="text-3xl font-bold mb-8 text-center">Açaí</h3>
+       <div class="grid md:grid-cols-3 gap-8">
+        <div class="price-card overflow-hidden">
+         <div class="mb-4 -mx-7 -mt-7 overflow-hidden"><img src="https://i.imgur.com/gPur48U.jpg" alt="Açaí" class="clickable-image" style="width: 100%; height: 200px; object-fit: cover; object-position: center;" onclick="openImageModal(event, 'https://i.imgur.com/gPur48U.jpg')" onerror="this.style.display='none';">
+         </div>
+         <h4 class="text-xl font-bold mb-4">Açaí Delicioso</h4>
+         <p class="text-sm text-gray-400 mb-3">Açaí cremoso com diversos complementos</p>
+        </div>
+        <div class="price-card">
+         <h4 class="text-xl font-bold mb-4">Tamanhos</h4>
+         <div class="space-y-3">
+          <div class="flex justify-between items-center"><span class="text-gray-300">200ml</span> <span class="font-bold text-xl">R$ 10,00</span>
+          </div>
+          <div class="flex justify-between items-center"><span class="text-gray-300">300ml</span> <span class="font-bold text-xl">R$ 14,00</span>
+          </div>
+          <div class="flex justify-between items-center"><span class="text-gray-300">400ml</span> <span class="font-bold text-xl">R$ 17,00</span>
+          </div>
+          <div class="flex justify-between items-center"><span class="text-gray-300">500ml</span> <span class="font-bold text-xl">R$ 20,00</span>
+          </div>
+         </div>
+        </div>
+        <div class="price-card">
+         <h4 class="text-xl font-bold mb-4">Complementos</h4>
+         <p class="text-sm text-gray-400 mb-3">Sem custos adicionais:</p>
+         <ul class="space-y-2 text-gray-300">
+          <li>• Leite em pó</li>
+          <li>• Leite condensado</li>
+          <li>• Granola</li>
+          <li>• Paçoca</li>
+          <li>• Banana</li>
+         </ul>
+        </div>
+       </div>
+      </div>
+     </div>
+    </section>
+   </div><!-- PÁGINA PASSEIOS -->
+   <div id="page-passeios" class="page">
+    <section class="section-spacing">
+     <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center mb-16">
+       <h2 class="text-4xl md:text-5xl font-bold mb-4">Passeios &amp; Aluguéis</h2>
+       <p class="text-gray-400">Aventuras no Lago Paranoá</p>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+       <div class="price-card overflow-hidden">
+        <div class="mb-4 -mx-7 -mt-7 overflow-hidden"><img src="https://i.imgur.com/8VQ72Ei.jpg" alt="Caiaque Individual" class="clickable-image" style="width: 100%; height: 180px; object-fit: cover; object-position: center;" onclick="openImageModal(event, 'https://i.imgur.com/8VQ72Ei.jpg')" onerror="this.style.display='none';">
+        </div>
+        <h3 class="text-xl font-bold mb-2">Caiaque Individual</h3>
+        <p class="text-sm text-gray-400 mb-4">Para quem quer remar no seu ritmo</p>
+        <p class="text-3xl font-bold">R$ 30,00</p>
+        <p class="text-sm text-gray-500 mt-2">por hora / por pessoa</p>
+       </div>
+       <div class="price-card overflow-hidden">
+        <div class="mb-4 -mx-7 -mt-7 overflow-hidden"><img src="https://i.imgur.com/Fxf3KNa.jpg" alt="Stand Up Paddle" class="clickable-image" style="width: 100%; height: 180px; object-fit: cover; object-position: center 70%;" onclick="openImageModal(event, 'https://i.imgur.com/Fxf3KNa.jpg')" onerror="this.style.display='none';">
+        </div>
+        <h3 class="text-xl font-bold mb-2">Stand Up (SUP)</h3>
+        <p class="text-sm text-gray-400 mb-4">Equilíbrio e diversão sobre as águas</p>
+        <p class="text-3xl font-bold">R$ 30,00</p>
+        <p class="text-sm text-gray-500 mt-2">por hora / por pessoa</p>
+       </div>
+       <div class="price-card overflow-hidden">
+        <div class="mb-4 -mx-7 -mt-7 overflow-hidden"><img src="https://i.imgur.com/0Ub5tua.jpg" alt="Caiaque Duplo" class="clickable-image" style="width: 100%; height: 180px; object-fit: cover; object-position: center 80%;" onclick="openImageModal(event, 'https://i.imgur.com/0Ub5tua.jpg')" onerror="this.style.display='none';">
+        </div>
+        <h3 class="text-xl font-bold mb-2">Caiaque Duplo</h3>
+        <p class="text-sm text-gray-400 mb-4">Perfeito para casais ou amigos</p>
+        <p class="text-3xl font-bold">R$ 60,00</p>
+        <p class="text-sm text-gray-500 mt-2">1 hora (2 adultos + 1 criança)</p>
+       </div>
+       <div class="price-card overflow-hidden">
+        <div class="mb-4 -mx-7 -mt-7 overflow-hidden"><img src="https://i.imgur.com/7W4lEoe.jpg" alt="Passeio de Lancha" class="clickable-image" style="width: 100%; height: 180px; object-fit: cover; object-position: center;" onclick="openImageModal(event, 'https://i.imgur.com/7W4lEoe.jpg')" onerror="this.style.display='none';">
+        </div>
+        <h3 class="text-xl font-bold mb-2">Passeio de Lancha</h3>
+        <p class="text-sm text-gray-400 mb-4">Ideal para grupos e comemorações</p>
+        <p class="text-3xl font-bold">R$ 500,00</p>
+        <p class="text-sm text-gray-500 mt-2">1 hora (até 9 pessoas)</p>
+       </div>
+       <div class="price-card overflow-hidden">
+        <div class="mb-4 -mx-7 -mt-7 overflow-hidden"><img src="https://i.imgur.com/xfhH0Tp.jpg" alt="Pedalinho Pequeno" class="clickable-image" style="width: 100%; height: 180px; object-fit: cover; object-position: center;" onclick="openImageModal(event, 'https://i.imgur.com/xfhH0Tp.jpg')" onerror="this.style.display='none';">
+        </div>
+        <h3 class="text-xl font-bold mb-2">Pedalinho Pequeno</h3>
+        <p class="text-sm text-gray-400 mb-4">Experiência leve e divertida</p>
+        <p class="text-3xl font-bold">R$ 40,00</p>
+        <p class="text-sm text-gray-500 mt-2">30 min (2 adultos + 1 criança)</p>
+       </div>
+       <div class="price-card overflow-hidden">
+        <div class="mb-4 -mx-7 -mt-7 overflow-hidden"><img src="https://i.imgur.com/9tIrCcG.jpg" alt="Pedalinho Grande" class="clickable-image" style="width: 100%; height: 180px; object-fit: cover; object-position: center;" onclick="openImageModal(event, 'https://i.imgur.com/9tIrCcG.jpg')" onerror="this.style.display='none';">
+        </div>
+        <h3 class="text-xl font-bold mb-2">Pedalinho Grande</h3>
+        <p class="text-sm text-gray-400 mb-4">Perfeito para grupos maiores</p>
+        <p class="text-3xl font-bold">R$ 80,00</p>
+        <p class="text-sm text-gray-500 mt-2">30 min (4 adultos + 2 crianças)</p>
+       </div>
+      </div>
+      <div class="elegant-card rounded-3xl p-8 text-center mt-12">
+       <h3 class="text-2xl font-bold mb-4">Horário de funcionamento</h3>
+       <p class="text-gray-400 mb-6">Segunda a segunda: 8h às 18h</p><a href="https://wa.me/5561983111268?text=Ol%C3%A1!%20Gostaria%20de%20agendar%20um%20passeio." target="_blank" rel="noopener noreferrer" class="btn-primary inline-block"> Agendar passeio no WhatsApp </a>
+      </div>
+     </div>
+    </section>
+   </div><!-- PÁGINA CONTATO -->
+   <div id="page-contato" class="page">
+    <section class="section-spacing">
+     <div class="max-w-4xl mx-auto px-6">
+      <div class="text-center mb-16">
+       <h2 class="text-4xl md:text-5xl font-bold mb-4">Contato &amp; Reservas</h2>
+       <p class="text-gray-400">Entre em contato conosco</p>
+      </div>
+      <div class="grid md:grid-cols-2 gap-8">
+       <div class="elegant-card rounded-3xl p-8">
+        <h3 class="text-2xl font-bold mb-6">Informações</h3>
+        <div class="space-y-4">
+         <div>
+          <h4 class="font-semibold mb-1">📞 Telefone</h4>
+          <p class="text-gray-400">(61) 99181-0762</p>
+         </div>
+         <div>
+          <h4 class="font-semibold mb-1">📍 Endereço</h4>
+          <p class="text-gray-400">Lago Sul – Brasília, DF</p>
+         </div>
+         <div>
+          <h4 class="font-semibold mb-1">🕐 Horário</h4>
+          <p class="text-gray-400">Segunda a segunda: 8h às 18h</p>
+         </div>
+        </div>
+       </div>
+       <div class="elegant-card rounded-3xl p-8">
+        <h3 class="text-2xl font-bold mb-6">Fale conosco</h3><a href="https://wa.me/5561991810762?text=Ol%C3%A1%2C%20gostaria%20de%20fazer%20uma%20reserva!" target="_blank" rel="noopener noreferrer" class="btn-primary w-full inline-block text-center mb-4"> WhatsApp </a> <a href="https://www.google.com/maps/place/Jk+Point/@-15.8192955,-47.8373968,17z/" target="_blank" rel="noopener noreferrer" class="btn-secondary w-full inline-block text-center"> Abrir no Google Maps </a>
+       </div>
+      </div>
+     </div>
+    </section>
+   </div>
+  </main>
+  <footer class="border-t border-neutral-800 bg-black py-8">
+   <div class="max-w-7xl mx-auto px-6 text-center">
+    <p class="text-sm text-gray-500">© 2024 JK TOUR • Restaurante &amp; Passeios no Lago Sul – Brasília</p>
+   </div>
+  </footer>
+  <script>
+    function navigateToPage(pageName) {
+      const pages = document.querySelectorAll('.page');
+      pages.forEach(page => page.classList.remove('active'));
+
+      const navLinks = document.querySelectorAll('.nav-link');
+      navLinks.forEach(link => link.classList.remove('active'));
+
+      const targetPage = document.getElementById('page-' + pageName);
+      if (targetPage) {
+        targetPage.classList.add('active');
+      }
+
+      const activeLink = Array.from(navLinks).find(link => 
+        link.textContent.toLowerCase().includes(pageName === 'home' ? 'home' : pageName)
+      );
+      if (activeLink) {
+        activeLink.classList.add('active');
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function openImageModal(event, mediaSrc) {
+      event.stopPropagation();
+      const modal = document.getElementById('imageModal');
+      const modalImage = document.getElementById('modalImage');
+      const modalVideo = document.getElementById('modalVideo');
+      
+      // Verifica se é vídeo ou imagem
+      if (mediaSrc.endsWith('.mp4') || mediaSrc.endsWith('.webm')) {
+        modalImage.style.display = 'none';
+        modalVideo.style.display = 'block';
+        modalVideo.src = mediaSrc;
+        modalVideo.play();
+      } else {
+        modalVideo.style.display = 'none';
+        modalImage.style.display = 'block';
+        modalImage.src = mediaSrc;
+      }
+      
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeImageModal() {
+      const modal = document.getElementById('imageModal');
+      const modalVideo = document.getElementById('modalVideo');
+      modalVideo.pause();
+      modalVideo.src = '';
+      modal.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a59d7cb4314a45a',t:'MTc2NDMzMjY3My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
